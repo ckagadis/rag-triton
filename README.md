@@ -30,7 +30,9 @@ A multimodal RAG pipeline with continual learning.
 │   └── README.md
 ├── rag-webui
 │   └── README.md
-└── README.md
+├── README.md
+└── scripts
+    └── setup-githooks.sh
 
-13 directories, 13 files
+14 directories, 14 files
 ```
