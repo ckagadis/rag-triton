@@ -99,7 +99,9 @@ This repository was built and tested on the following hardware configuration:
 - **Memory (RAM)**: 192GB CORSAIR Vengeance RGB DDR5  
 - **Graphics Card (GPU)**: GIGABYTE AORUS GeForce RTX 5090 Master, 32GB GDDR7  
 - **Motherboard**: GIGABYTE Z790 AORUS ELITE AX (LGA 1700, Intel Z790 chipset)  
-- **Storage**: NVMe SSD (2TB recommended minimum for datasets, embeddings, and model weights)  
+- **Storage**: NVMe SSD (2TB recommended minimum for datasets, embeddings, and model weights) 
+
+> ⚠️ **Note**: Minimum hardware requirements will be specified once the core multimodal and LLM models are finalized. At present, this project has only been tested on the configuration listed above.
 
 > ⚠️ The system is designed for GPU acceleration. While most services will run on CPU-only setups, components such as **rag-vllm** and **rag-vision** require a modern NVIDIA GPU with sufficient VRAM for practical performance.  
 
