@@ -1,0 +1,21 @@
+#!/bin/bash
+set -e
+
+README="README.md"
+TMP_README="$(mktemp)"
+
+# Generate project tree (ignore .git, node_modules, etc.)
+PROJECT_TREE=$(tree -a -I '.git|node_modules|__pycache__|*.pyc|*.pyo|*.pyd|.mypy_cache|.pytest_cache|.DS_Store' .)
+
+# Replace the section between <!-- PROJECT TREE START --> and <!-- PROJECT TREE END -->
+awk -v tree="$PROJECT_TREE" '
+BEGIN { in_block=0 }
+/<!-- PROJECT TREE START -->/ { print; print "```"; print tree; print "```"; in_block=1; next }
+/<!-- PROJECT TREE END -->/ { in_block=0 }
+!in_block { print }
+' "$README" > "$TMP_README"
+
+mv "$TMP_README" "$README"
+
+# Stage updated README.md so commit includes it
+git add "$README"
