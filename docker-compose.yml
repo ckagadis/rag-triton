@@ -1,0 +1,124 @@
+version: "3.9"
+
+networks:
+  rag-master:
+    driver: bridge
+
+volumes:
+  rag-chromadb-data:
+  rag-websearch-config:
+  rag-vllm-cache:
+  rag-ingestion-data:
+
+services:
+  rag-backend:
+    build: ./rag-backend
+    container_name: rag-backend
+    networks:
+      - rag-master
+    ports:
+      - "8000:8000"   # external access for orchestration API
+    depends_on:
+      - rag-ocr
+      - rag-vision
+      - rag-embedder
+      - rag-ner
+      - rag-websearch
+      - rag-vllm
+      - rag-chromadb
+
+  rag-ingestion:
+    build: ./rag-ingestion
+    container_name: rag-ingestion
+    networks:
+      - rag-master
+    volumes:
+      - rag-ingestion-data:/data
+    expose:
+      - "8000"
+
+  rag-ocr:
+    build: ./rag-ocr
+    container_name: rag-ocr
+    networks:
+      - rag-master
+    expose:
+      - "8000"
+
+  rag-vision:
+    build: ./rag-vision
+    container_name: rag-vision
+    networks:
+      - rag-master
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    expose:
+      - "8000"
+
+  rag-embedder:
+    build: ./rag-embedder
+    container_name: rag-embedder
+    networks:
+      - rag-master
+    expose:
+      - "8000"
+
+  rag-ner:
+    build: ./rag-ner
+    container_name: rag-ner
+    networks:
+      - rag-master
+    expose:
+      - "8000"
+
+  rag-websearch:
+    build: ./rag-websearch
+    container_name: rag-websearch
+    networks:
+      - rag-master
+    volumes:
+      - rag-websearch-config:/etc/searxng
+    expose:
+      - "8080"
+
+  rag-vllm:
+    build: ./rag-vllm
+    container_name: rag-vllm
+    networks:
+      - rag-master
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    volumes:
+      - rag-vllm-cache:/root/.cache
+    expose:
+      - "8000"
+
+  rag-webui:
+    build: ./rag-webui
+    container_name: rag-webui
+    networks:
+      - rag-master
+    ports:
+      - "8501:8501"   # external UI access
+    depends_on:
+      - rag-backend
+
+  rag-chromadb:
+    build: ./rag-chromadb
+    container_name: rag-chromadb
+    networks:
+      - rag-master
+    volumes:
+      - rag-chromadb-data:/data
+    expose:
+      - "8000"
