@@ -1,27 +1,17 @@
 version: "3.9"
 
-# Use a named network with an explicit name to avoid project-prefixing
 networks:
-  rag-master:
-    name: rag-master
-    driver: bridge
+  rag-master: {}
 
-# Define named volumes with explicit names to avoid project prefixes
 volumes:
-  rag-chromadb-data:
-    name: rag-chromadb-data
-  rag-websearch-config:
-    name: rag-websearch-config
-  rag-vllm-cache:
-    name: rag-vllm-cache
-  rag-ingestion-data:
-    name: rag-ingestion-data
+  rag-chromadb-data: {}
+  rag-websearch-config: {}
+  rag-vllm-cache: {}
+  rag-ingestion-data: {}
 
 services:
   rag-backend:
     build: ./rag-backend
-    image: rag-backend:latest        # explicit image name
-    container_name: rag-backend     # explicit container name
     networks:
       - rag-master
     ports:
@@ -37,8 +27,6 @@ services:
 
   rag-ingestion:
     build: ./rag-ingestion
-    image: rag-ingestion:latest
-    container_name: rag-ingestion
     networks:
       - rag-master
     volumes:
@@ -48,8 +36,6 @@ services:
 
   rag-ocr:
     build: ./rag-ocr
-    image: rag-ocr:latest
-    container_name: rag-ocr
     networks:
       - rag-master
     expose:
@@ -57,8 +43,6 @@ services:
 
   rag-vision:
     build: ./rag-vision
-    image: rag-vision:latest
-    container_name: rag-vision
     networks:
       - rag-master
     deploy:
@@ -73,8 +57,6 @@ services:
 
   rag-embedder:
     build: ./rag-embedder
-    image: rag-embedder:latest
-    container_name: rag-embedder
     networks:
       - rag-master
     expose:
@@ -82,8 +64,6 @@ services:
 
   rag-ner:
     build: ./rag-ner
-    image: rag-ner:latest
-    container_name: rag-ner
     networks:
       - rag-master
     expose:
@@ -91,8 +71,6 @@ services:
 
   rag-websearch:
     build: ./rag-websearch
-    image: rag-websearch:latest
-    container_name: rag-websearch
     networks:
       - rag-master
     volumes:
@@ -102,8 +80,6 @@ services:
 
   rag-vllm:
     build: ./rag-vllm
-    image: rag-vllm:latest
-    container_name: rag-vllm
     networks:
       - rag-master
     deploy:
@@ -120,8 +96,6 @@ services:
 
   rag-webui:
     build: ./rag-webui
-    image: rag-webui:latest
-    container_name: rag-webui
     networks:
       - rag-master
     ports:
@@ -131,8 +105,6 @@ services:
 
   rag-chromadb:
     build: ./rag-chromadb
-    image: rag-chromadb:latest
-    container_name: rag-chromadb
     networks:
       - rag-master
     volumes:
