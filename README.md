@@ -53,7 +53,6 @@ The following section is automatically updated before each commit:
 │   └── README.md
 ├── rag-ingestion
 │   └── README.md
-├── ragmaster
 ├── rag-ner
 │   └── README.md
 ├── rag-ocr
@@ -70,7 +69,7 @@ The following section is automatically updated before each commit:
 └── scripts
     └── setup-githooks.sh
 
-14 directories, 14 files
+13 directories, 14 files
 ```
 <!-- PROJECT TREE END -->
 
@@ -91,7 +90,7 @@ The following section is automatically updated before each commit:
 
 ---
 
-## 🔗 Networking
+## 🔗 Networking - Test
 
 - All containers are connected to a single custom Docker network: **`rag-master`**.  
 - Communication between containers is **only allowed via HTTP APIs**.  
