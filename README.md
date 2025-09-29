@@ -46,30 +46,46 @@ The following section is automatically updated before each commit:
 ├── .githooks
 │   └── pre-commit
 ├── rag-backend
-│   └── README.md
+│   ├── app.py
+│   ├── Dockerfile
+│   └── requirements.txt
 ├── rag-chromadb
-│   └── README.md
+│   ├── chroma.yaml
+│   └── Dockerfile
 ├── rag-embedder
-│   └── README.md
+│   └── Dockerfile
 ├── rag-ingestion
-│   └── README.md
+│   ├── app.py
+│   ├── Dockerfile
+│   └── requirments.txt
 ├── rag-ner
-│   └── README.md
+│   ├── app.py
+│   ├── Dockerfile
+│   └── requirements.txt
 ├── rag-ocr
-│   └── README.md
+│   ├── app.py
+│   ├── Dockerfile
+│   └── requirements.txt
 ├── rag-vision
-│   └── README.md
+│   ├── app.py
+│   ├── Dockerfile
+│   └── requirements.txt
 ├── rag-vllm
-│   └── README.md
+│   ├── config.json
+│   ├── Dockerfile
+│   └── start.sh
 ├── rag-websearch
-│   └── README.md
+│   ├── Dockerfile
+│   └── setting.yml
 ├── rag-webui
-│   └── README.md
+│   ├── app.py
+│   ├── Dockerfile
+│   └── requirements.txt
 ├── README.md
 └── scripts
     └── setup-githooks.sh
 
-13 directories, 14 files
+13 directories, 30 files
 ```
 <!-- PROJECT TREE END -->
 
