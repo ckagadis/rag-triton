@@ -51,7 +51,8 @@ The following section is automatically updated before each commit:
 │   └── requirements.txt
 ├── rag-chromadb
 │   ├── chroma.yaml
-│   └── Dockerfile
+│   ├── Dockerfile
+│   └── requirements.txt
 ├── rag-embedder
 │   ├── app.py
 │   ├── Dockerfile
@@ -75,6 +76,7 @@ The following section is automatically updated before each commit:
 ├── rag-vllm
 │   ├── config.json
 │   ├── Dockerfile
+│   ├── requirements.txt
 │   └── start.sh
 ├── rag-websearch
 │   ├── Dockerfile
@@ -87,7 +89,7 @@ The following section is automatically updated before each commit:
 └── scripts
     └── setup-githooks.sh
 
-13 directories, 32 files
+13 directories, 34 files
 ```
 <!-- PROJECT TREE END -->
 

@@ -1,5 +1,6 @@
 fastapi
 uvicorn[standard]
+pdfplumber
 python-docx
 pandas
-pdfplumber
+openpyxl

@@ -1,13 +1,20 @@
-FROM nvidia/cuda:12.1.105-base-ubuntu22.04
+FROM python:3.11-slim
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y python3 python3-pip git
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1
 
-RUN pip3 install vllm
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git \
+ && rm -rf /var/lib/apt/lists/*
 
-COPY config.json .
-COPY start.sh .
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+RUN chmod +x start.sh
 
 EXPOSE 8000
-CMD ["bash", "start.sh"]
+CMD ["./start.sh"]
