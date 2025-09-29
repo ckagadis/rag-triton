@@ -1,151 +1,110 @@
-# ragmaster
+ragmaster
 
-**ragmaster** is a modular, containerized Retrieval-Augmented Generation (RAG) pipeline with **multimodal support**, **continual learning**, and **mandatory web search**.  
+ragmaster is a modular, containerized Retrieval-Augmented Generation (RAG) pipeline with multimodal support, continual learning, and mandatory web search.
 
-- Supports ingestion of all common document formats: images (PNG, JPG), PDFs, Word, Excel, PowerPoint, and plain text.  
-- Integrates OCR and vision-language models for image-heavy content (e.g., comic pages).  
-- Uses [SearxNG](https://github.com/searxng/searxng) for every query to ensure answers are always up to date.  
-- Stores all knowledge (documents, web search results, user interactions) in **ChromaDB with persistent volumes**.  
-- Runs **vLLM** for efficient GPU-accelerated inference.  
-- Modular design: each service runs in its own container and communicates over well-defined APIs.  
+- Supports ingestion of all common document formats: images (PNG, JPG), PDFs, Word, Excel, PowerPoint, and plain text.
+- Integrates OCR and vision-language models for image-heavy content (e.g., comic pages).
+- Uses SearxNG for every query to ensure answers are always up to date.
+- Stores all knowledge (documents, web search results, user interactions) in ChromaDB with persistent volumes.
+- Runs vLLM for efficient GPU-accelerated inference.
+- Modular design: each service runs in its own container and communicates over well-defined APIs.
 
----
-
-## 🚀 First-Time Setup
+First-Time Setup
 
 After cloning the repository, run the following script to enable Git hooks:
 
-```bash
 ./scripts/setup-githooks.sh
-```
 
-This ensures the **project tree in this README** is automatically updated on every commit.  
+This ensures the project tree in this README is automatically updated on every commit.
 
----
+Running the Pipeline (Scalable & Multi-Project)
 
-## 🐳 Running the Pipeline
+Start all services with a project name for scalable and isolated deployments:
 
-Start all services with:
+docker compose -p ragmaster-dev up --build -d
 
-```bash
-docker compose up --build
-```
+Containers are automatically named, for example:
 
-This will spin up all components: ingestion, OCR, embeddings, vision models, web search (SearxNG), ChromaDB, vLLM, backend, and the web UI.  
+ragmaster-dev_rag-backend-1
+ragmaster-dev_rag-webui-1
+ragmaster-dev_rag-ocr-1
 
----
+Volumes and networks are prefixed:
 
-## 📂 Project Tree
+ragmaster-dev_rag-chromadb-data
+ragmaster-dev_rag-master
 
-The following section is automatically updated before each commit:
+Scaling a Service:
 
-<!-- PROJECT TREE START -->
-```
-.
-├── docker-compose.yml
-├── .githooks
-│   └── pre-commit
-├── rag-backend
-│   ├── app.py
-│   ├── Dockerfile
-│   └── requirements.txt
-├── rag-chromadb
-│   ├── chroma.yaml
-│   ├── Dockerfile
-│   └── requirements.txt
-├── rag-embedder
-│   ├── app.py
-│   ├── Dockerfile
-│   └── requirements.txt
-├── rag-ingestion
-│   ├── app.py
-│   ├── Dockerfile
-│   └── requirements.txt
-├── rag-ner
-│   ├── app.py
-│   ├── Dockerfile
-│   └── requirements.txt
-├── rag-ocr
-│   ├── app.py
-│   ├── Dockerfile
-│   └── requirements.txt
-├── rag-vision
-│   ├── app.py
-│   ├── Dockerfile
-│   └── requirements.txt
-├── rag-vllm
-│   ├── config.json
-│   ├── Dockerfile
-│   ├── requirements.txt
-│   └── start.sh
-├── rag-websearch
-│   ├── Dockerfile
-│   └── settings.yml
-├── rag-webui
-│   ├── app.py
-│   ├── Dockerfile
-│   └── requirements.txt
-├── README.md
-└── scripts
-    └── setup-githooks.sh
+docker compose -p ragmaster-dev up --scale rag-backend=3 -d
 
-13 directories, 34 files
-```
-<!-- PROJECT TREE END -->
+This creates multiple backend instances:
 
----
+ragmaster-dev_rag-backend-1
+ragmaster-dev_rag-backend-2
+ragmaster-dev_rag-backend-3
 
-## 🧩 Components
+Running Multiple Projects Simultaneously:
 
-- **rag-backend** – Orchestration layer (FastAPI).  
-- **rag-ingestion** – Document ingestion (PDF, Word, Excel, PowerPoint, text).  
-- **rag-ocr** – OCR service for image-based content.  
-- **rag-vision** – Vision-language embeddings (e.g., CLIP, BLIP, LLaVA).  
-- **rag-embedder** – Text embeddings (OCR output, web content, documents).  
-- **rag-ner** – Named entity and relation extraction.  
-- **rag-websearch** – SearxNG container (mandatory for every query).  
-- **rag-vllm** – vLLM GPU inference server.  
-- **rag-webui** – User-facing web interface.  
-- **rag-chromadb** – Vector database with persistent storage.  
+docker compose -p ragmaster-test up -d
+docker compose -p ragmaster-prod up -d
 
----
+Each project is fully isolated with its own containers, networks, and volumes.
 
-## 🔗 Networking - Test
+Stopping and Cleaning Up a Project:
 
-- All containers are connected to a single custom Docker network: **`rag-master`**.  
-- Communication between containers is **only allowed via HTTP APIs**.  
-- No container can directly access another’s filesystem or database.  
-- This ensures modularity, reproducibility, and makes it easy to swap out components without breaking the rest of the pipeline.  
+docker compose -p ragmaster-dev down -v --rmi all
 
----
+Removes all containers, volumes, and images for that project only.
 
-## 🖥️ Hardware Used for Development & Testing
+Project Tree
+
+[This section is automatically generated via Git hook]
+
+Components
+
+- rag-backend – Orchestration layer (FastAPI)
+- rag-ingestion – Document ingestion (PDF, Word, Excel, PowerPoint, text)
+- rag-ocr – OCR service for image-based content
+- rag-vision – Vision-language embeddings (e.g., CLIP, BLIP, LLaVA)
+- rag-embedder – Text embeddings (OCR output, web content, documents)
+- rag-ner – Named entity and relation extraction
+- rag-websearch – SearxNG container (mandatory for every query)
+- rag-vllm – vLLM GPU inference server
+- rag-webui – User-facing web interface
+- rag-chromadb – Vector database with persistent storage
+
+Networking
+
+- All containers are connected to a single custom Docker network: rag-master
+- Communication between containers is only allowed via HTTP APIs
+- No container can directly access another’s filesystem or database
+- This ensures modularity, reproducibility, and makes it easy to swap out components without breaking the rest of the pipeline
+
+Hardware Used for Development & Testing
 
 This repository was built and tested on the following hardware configuration:
 
-- **Processor (CPU)**: Intel Core i9-13900KS (24-core, 32-thread, Raptor Lake, up to 6.0 GHz)  
-- **Memory (RAM)**: 192GB CORSAIR Vengeance RGB DDR5  
-- **Graphics Card (GPU)**: GIGABYTE AORUS GeForce RTX 5090 Master, 32GB GDDR7  
-- **Motherboard**: GIGABYTE Z790 AORUS ELITE AX (LGA 1700, Intel Z790 chipset)  
-- **Storage**: NVMe SSD (2TB recommended minimum for datasets, embeddings, and model weights) 
+Processor (CPU): Intel Core i9-13900KS (24-core, 32-thread, Raptor Lake, up to 6.0 GHz)
+Memory (RAM): 192GB CORSAIR Vengeance RGB DDR5
+Graphics Card (GPU): GIGABYTE AORUS GeForce RTX 5090 Master, 32GB GDDR7
+Motherboard: GIGABYTE Z790 AORUS ELITE AX (LGA 1700, Intel Z790 chipset)
+Storage: NVMe SSD (2TB recommended minimum for datasets, embeddings, and model weights)
 
-> ⚠️ **Note**: Minimum hardware requirements will be specified once the core multimodal and LLM models are finalized. At present, this project has only been tested on the configuration listed above.
+Note: Minimum hardware requirements will be specified once the core multimodal and LLM models are finalized. At present, this project has only been tested on the configuration listed above.
 
-> ⚠️ The system is designed for GPU acceleration. While most services will run on CPU-only setups, components such as **rag-vllm** and **rag-vision** require a modern NVIDIA GPU with sufficient VRAM for practical performance.  
+The system is designed for GPU acceleration. While most services will run on CPU-only setups, components such as rag-vllm and rag-vision require a modern NVIDIA GPU with sufficient VRAM for practical performance.
 
-### Minimum vs. Tested Hardware
+Minimum vs. Tested Hardware
 
-| Component | Minimum | Recommended (tested) |
-|-----------|----------|-----------------------|
-| CPU       | 8 cores | Intel i9-13900KS (24 cores) |
-| RAM       | 32GB | 192GB DDR5 |
-| GPU       | NVIDIA RTX 3090 (24GB VRAM) | RTX 5090 (32GB VRAM) |
-| Storage   | 500GB SSD | 2TB NVMe SSD |
+Component | Minimum | Recommended (tested)
+CPU | 8 cores | Intel i9-13900KS (24 cores)
+RAM | 32GB | 192GB DDR5
+GPU | NVIDIA RTX 3090 (24GB VRAM) | RTX 5090 (32GB VRAM)
+Storage | 500GB SSD | 2TB NVMe SSD
 
----
+Notes
 
-## 📝 Notes
-
-- All containers, images, volumes, and directories use the `rag-` prefix for consistency.  
-- Persistent Docker volumes are created for every service that needs long-term storage.  
-- Web search results from SearxNG are always **embedded and persisted** in ChromaDB, so the system continually expands its knowledge.  
+- All containers, images, volumes, and networks now use a project-name prefix for scalability and isolation
+- Persistent Docker volumes are created for every service that needs long-term storage
+- Web search results from SearxNG are embedded and persisted in ChromaDB, so the system continually expands its knowledge
