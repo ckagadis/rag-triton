@@ -60,7 +60,7 @@ The following section is automatically updated before each commit:
 ├── rag-ingestion
 │   ├── app.py
 │   ├── Dockerfile
-│   └── requirments.txt
+│   └── requirements.txt
 ├── rag-ner
 │   ├── app.py
 │   ├── Dockerfile
@@ -80,7 +80,7 @@ The following section is automatically updated before each commit:
 │   └── start.sh
 ├── rag-websearch
 │   ├── Dockerfile
-│   └── setting.yml
+│   └── settings.yml
 ├── rag-webui
 │   ├── app.py
 │   ├── Dockerfile
