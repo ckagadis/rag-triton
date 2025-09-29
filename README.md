@@ -91,6 +91,15 @@ The following section is automatically updated before each commit:
 
 ---
 
+## 🔗 Networking
+
+- All containers are connected to a single custom Docker network: **`rag-master`**.  
+- Communication between containers is **only allowed via HTTP APIs**.  
+- No container can directly access another’s filesystem or database.  
+- This ensures modularity, reproducibility, and makes it easy to swap out components without breaking the rest of the pipeline.  
+
+---
+
 ## 🖥️ Hardware Used for Development & Testing
 
 This repository was built and tested on the following hardware configuration:
