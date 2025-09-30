@@ -1,3 +1,5 @@
 #!/bin/bash
 set -e
-vllm serve --config /app/config.json --port 8000
+
+# Use YAML config for vLLM
+vllm serve --config /app/config.yaml --port 8000

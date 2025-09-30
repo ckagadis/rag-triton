@@ -1,4 +1,0 @@
-{
-  "model": "facebook/opt-1.3b",
-  "tensor_parallel_size": 1
-}
