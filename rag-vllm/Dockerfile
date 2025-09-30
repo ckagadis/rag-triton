@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     ca-certificates \
     python3 \
+    python3-dev \
     python3-pip \
     python3-venv \
     && rm -rf /var/lib/apt/lists/*
@@ -30,6 +31,9 @@ RUN pip install flash-attention
 
 # Set working directory
 WORKDIR /app
+
+# Copy the configuration file into the container
+COPY config.yaml /app/config.yaml
 
 # Copy your start script or entrypoint (if any)
 COPY start.sh /app/start.sh
