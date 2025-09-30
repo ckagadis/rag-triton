@@ -78,6 +78,19 @@ Project Tree
 ├── .githooks
 │   └── pre-commit
 ├── rag-vllm
+│   ├── config.yaml
+│   ├── Dockerfile
+│   ├── requirements.txt
+│   └── start.sh
+├── README.md
+└── scripts
+    └── setup-githooks.sh
+
+4 directories, 8 files
+├── docker-compose.yml
+├── .githooks
+│   └── pre-commit
+├── rag-vllm
 │   ├── config.json
 │   ├── Dockerfile
 │   ├── requirements.txt

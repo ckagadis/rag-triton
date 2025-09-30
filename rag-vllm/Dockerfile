@@ -1,22 +1,39 @@
-FROM python:3.11-slim
+# Base image with CUDA 12.1 + cuDNN
+FROM nvidia/cuda:12.1.1-cudnn8-runtime-ubuntu22.04
 
-WORKDIR /app
+# Avoid interactive prompts during install
+ENV DEBIAN_FRONTEND=noninteractive
 
-ENV PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1
-
-# Install dependencies
+# Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
     git \
+    wget \
+    curl \
+    ca-certificates \
+    python3 \
+    python3-pip \
+    python3-venv \
     && rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Upgrade pip
+RUN python3 -m pip install --upgrade pip
 
-COPY . .
+# Install PyTorch with CUDA support (adjust for your GPU/CUDA version)
+RUN pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
 
-RUN chmod +x start.sh
+# Install vLLM and dependencies
+RUN pip install vllm transformers accelerate safetensors
 
-EXPOSE 8000
+# Optional: install FlashAttention (if not included via vLLM)
+RUN pip install flash-attention
 
-CMD ["./start.sh"]
+# Set working directory
+WORKDIR /app
+
+# Copy your start script or entrypoint (if any)
+COPY start.sh /app/start.sh
+RUN chmod +x /app/start.sh
+
+# Default command to start the API
+CMD ["/app/start.sh"]
