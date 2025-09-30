@@ -59,7 +59,22 @@ Removes all containers, volumes, and images for that project only.
 
 Project Tree
 
-[This section is automatically generated via Git hook]
+<!-- PROJECT TREE START -->
+.
+├── docker-compose.yml
+├── .githooks
+│   └── pre-commit
+├── rag-vllm
+│   ├── config.json
+│   ├── Dockerfile
+│   ├── requirements.txt
+│   └── start.sh
+├── README.md
+└── scripts
+    └── setup-githooks.sh
+
+4 directories, 8 files
+<!-- PROJECT TREE END -->
 
 Components
 
