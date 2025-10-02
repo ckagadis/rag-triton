@@ -8,9 +8,10 @@ TMP_README="$(mktemp)"
 RAW_TREE=$(tree -a -I '.git|node_modules|__pycache__|*.pyc|*.pyo|*.pyd|.mypy_cache|.pytest_cache|.DS_Store' .)
 
 # Wrap tree output in triple backticks for GitHub
-PROJECT_TREE="```text
+PROJECT_TREE="\
+\`\`\`text
 $RAW_TREE
-```"
+\`\`\`"
 
 # Replace the section between PROJECT TREE markers
 awk -v tree="$PROJECT_TREE" '
