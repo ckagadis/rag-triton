@@ -1,62 +1,3 @@
-ragmaster
-
-ragmaster is a modular, containerized Retrieval-Augmented Generation (RAG) pipeline with multimodal support, continual learning, and mandatory web search.
-
-- Supports ingestion of all common document formats: images (PNG, JPG), PDFs, Word, Excel, PowerPoint, and plain text.
-- Integrates OCR and vision-language models for image-heavy content (e.g., comic pages).
-- Uses SearxNG for every query to ensure answers are always up to date.
-- Stores all knowledge (documents, web search results, user interactions) in ChromaDB with persistent volumes.
-- Runs vLLM for efficient GPU-accelerated inference.
-- Modular design: each service runs in its own container and communicates over well-defined APIs.
-
-First-Time Setup
-
-After cloning the repository, run the following script to enable Git hooks:
-
-./scripts/setup-githooks.sh
-
-This ensures the project tree in this README is automatically updated on every commit.
-
-Running the Pipeline (Scalable & Multi-Project)
-
-Start all services with a project name for scalable and isolated deployments:
-
-docker compose -p ragmaster-dev up --build -d
-
-Containers are automatically named, for example:
-
-ragmaster-dev_rag-backend-1
-ragmaster-dev_rag-webui-1
-ragmaster-dev_rag-ocr-1
-
-Volumes and networks are prefixed:
-
-ragmaster-dev_rag-chromadb-data
-ragmaster-dev_rag-master
-
-Scaling a Service:
-
-docker compose -p ragmaster-dev up --scale rag-backend=3 -d
-
-This creates multiple backend instances:
-
-ragmaster-dev_rag-backend-1
-ragmaster-dev_rag-backend-2
-ragmaster-dev_rag-backend-3
-
-Running Multiple Projects Simultaneously:
-
-docker compose -p ragmaster-test up -d
-docker compose -p ragmaster-prod up -d
-
-Each project is fully isolated with its own containers, networks, and volumes.
-
-Stopping and Cleaning Up a Project:
-
-docker compose -p ragmaster-dev down -v --rmi all
-
-Removes all containers, volumes, and images for that project only.
-
 Project Tree
 
 <!-- PROJECT TREE START -->
@@ -64,114 +5,120 @@ Project Tree
 ├── docker-compose.yml
 ├── .githooks
 │   └── pre-commit
-├── rag-vllm
-│   ├── config.yaml
-│   ├── Dockerfile
-│   ├── requirements.txt
-│   └── start.sh
+├── models
+│   └── resnet50
+│       ├── 1
+│       │   ├── model.onnx
+│       │   └── model.onnxclear
+│       └── config.pbtxt
 ├── README.md
 └── scripts
     └── setup-githooks.sh
 
-4 directories, 8 files
-├── docker-compose.yml
-├── .githooks
-│   └── pre-commit
-├── rag-vllm
-│   ├── config.yaml
-│   ├── Dockerfile
-│   ├── requirements.txt
-│   └── start.sh
-├── README.md
-└── scripts
-    └── setup-githooks.sh
-
-4 directories, 8 files
-├── docker-compose.yml
-├── .githooks
-│   └── pre-commit
-├── rag-vllm
-│   ├── config.yaml
-│   ├── Dockerfile
-│   ├── requirements.txt
-│   └── start.sh
-├── README.md
-└── scripts
-    └── setup-githooks.sh
-
-4 directories, 8 files
-├── docker-compose.yml
-├── .githooks
-│   └── pre-commit
-├── rag-vllm
-│   ├── config.json
-│   ├── Dockerfile
-│   ├── requirements.txt
-│   └── start.sh
-├── README.md
-└── scripts
-    └── setup-githooks.sh
-
-4 directories, 8 files
-├── docker-compose.yml
-├── .githooks
-│   └── pre-commit
-├── rag-vllm
-│   ├── config.json
-│   ├── Dockerfile
-│   ├── requirements.txt
-│   └── start.sh
-├── README.md
-└── scripts
-    └── setup-githooks.sh
-
-4 directories, 8 files
+6 directories, 7 files
 <!-- PROJECT TREE END -->
 
-Components
+# Triton Inference Server with ResNet50 (ONNX)
 
-- rag-backend – Orchestration layer (FastAPI)
-- rag-ingestion – Document ingestion (PDF, Word, Excel, PowerPoint, text)
-- rag-ocr – OCR service for image-based content
-- rag-vision – Vision-language embeddings (e.g., CLIP, BLIP, LLaVA)
-- rag-embedder – Text embeddings (OCR output, web content, documents)
-- rag-ner – Named entity and relation extraction
-- rag-websearch – SearxNG container (mandatory for every query)
-- rag-vllm – vLLM GPU inference server
-- rag-webui – User-facing web interface
-- rag-chromadb – Vector database with persistent storage
+This project demonstrates how to run NVIDIA Triton Inference Server in Docker with a sample ResNet50 ONNX model.
 
-Networking
+## 📦 Requirements
 
-- All containers are connected to a single custom Docker network: rag-master
-- Communication between containers is only allowed via HTTP APIs
-- No container can directly access another’s filesystem or database
-- This ensures modularity, reproducibility, and makes it easy to swap out components without breaking the rest of the pipeline
+- NVIDIA GPU + drivers
+- Docker and Docker Compose
+- NVIDIA Container Toolkit (for GPU passthrough to Docker)
 
-Hardware Used for Development & Testing
+Verify GPU is visible to Docker:
 
-This repository was built and tested on the following hardware configuration:
+```bash
+docker run --rm --gpus all nvidia/cuda:12.2.0-base nvidia-smi
+```
 
-Processor (CPU): Intel Core i9-13900KS (24-core, 32-thread, Raptor Lake, up to 6.0 GHz)
-Memory (RAM): 192GB CORSAIR Vengeance RGB DDR5
-Graphics Card (GPU): GIGABYTE AORUS GeForce RTX 5090 Master, 32GB GDDR7
-Motherboard: GIGABYTE Z790 AORUS ELITE AX (LGA 1700, Intel Z790 chipset)
-Storage: NVMe SSD (2TB recommended minimum for datasets, embeddings, and model weights)
+## ⚙️ Setup
 
-Note: Minimum hardware requirements will be specified once the core multimodal and LLM models are finalized. At present, this project has only been tested on the configuration listed above.
+1. Clone this repository (or create a working directory):
 
-The system is designed for GPU acceleration. While most services will run on CPU-only setups, components such as rag-vllm and rag-vision require a modern NVIDIA GPU with sufficient VRAM for practical performance.
+```bash
+mkdir -p ~/Docker/triton && cd ~/Docker/triton
+```
 
-Minimum vs. Tested Hardware
+2. Create the model repository structure:
 
-Component | Minimum | Recommended (tested)
-CPU | 8 cores | Intel i9-13900KS (24 cores)
-RAM | 32GB | 192GB DDR5
-GPU | NVIDIA RTX 3090 (24GB VRAM) | RTX 5090 (32GB VRAM)
-Storage | 500GB SSD | 2TB NVMe SSD
+```bash
+mkdir -p models/resnet50/1
+```
 
-Notes
+3. Download the ResNet50 ONNX model:
 
-- All containers, images, volumes, and networks now use a project-name prefix for scalability and isolation
-- Persistent Docker volumes are created for every service that needs long-term storage
-- Web search results from SearxNG are embedded and persisted in ChromaDB, so the system continually expands its knowledge
+```bash
+wget https://media.githubusercontent.com/media/onnx/models/main/vision/classification/resnet/model/resnet50-v1-7.onnx -O models/resnet50/1/model.onnx
+```
+
+4. Create a `config.pbtxt` for the model (`models/resnet50/config.pbtxt`):
+
+```text
+name: "resnet50"
+platform: "onnxruntime_onnx"
+max_batch_size: 8
+input [
+  {
+    name: "data"
+    data_type: TYPE_FP32
+    dims: [ 3, 224, 224 ]
+  }
+]
+output [
+  {
+    name: "resnetv17_dense0_fwd"
+    data_type: TYPE_FP32
+    dims: [ 1000 ]
+  }
+]
+```
+
+5. Create a `docker-compose.yml` to run Triton:
+
+```yaml
+services:
+  triton_server:
+    image: nvcr.io/nvidia/tritonserver:23.12-py3
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+    volumes:
+      - ./models:/models
+    ports:
+      - "8000:8000"
+      - "8001:8001"
+      - "8002:8002"
+    command: ["tritonserver", "--model-repository=/models"]
+```
+
+## 🚀 Run Triton
+
+```bash
+docker compose up
+```
+
+## ✅ Test the Model
+
+You can query the server using `curl` or `tritonclient`:
+
+```bash
+pip install nvidia-pip nvidia-pip-tritonclient[all]
+```
+
+Example using Python client:
+
+```python
+import tritonclient.http as httpclient
+import numpy as np
+
+client = httpclient.InferenceServerClient(url="localhost:8000")
+input_data = np.random.randn(1,3,224,224).astype(np.float32)
+inputs = [httpclient.InferInput("data", input_data.shape, "FP32")]
+inputs[0].set_data_from_numpy(input_data)
+results = client.infer("resnet50", inputs)
+output_data = results.as_numpy("resnetv17_dense0_fwd")
+print(output_data)
+```
