@@ -16,20 +16,6 @@ Project Tree
     └── setup-githooks.sh
 
 6 directories, 7 files
-├── docker-compose.yml
-├── .githooks
-│   └── pre-commit
-├── models
-│   └── resnet50
-│       ├── 1
-│       │   ├── model.onnx
-│       │   └── model.onnxclear
-│       └── config.pbtxt
-├── README.md
-└── scripts
-    └── setup-githooks.sh
-
-6 directories, 7 files
 <!-- PROJECT TREE END -->
 
 # Triton Inference Server with ResNet50 (ONNX)
