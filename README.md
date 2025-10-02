@@ -2,6 +2,7 @@ Project Tree
 
 
 <!-- PROJECT TREE START -->
+```text
 .
 ├── docker-compose.yml
 ├── .githooks
@@ -17,6 +18,7 @@ Project Tree
     └── setup-githooks.sh
 
 6 directories, 7 files
+```
 <!-- PROJECT TREE END -->
 
 # Triton Inference Server with ResNet50 (ONNX)
