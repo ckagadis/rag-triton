@@ -8,6 +8,9 @@ Project Tree
 ├── .githooks
 │   └── pre-commit
 ├── models
+│   ├── clip
+│   │   └── 1
+│   │       └── config.pbtxt
 │   └── resnet50
 │       ├── 1
 │       │   ├── model.onnx
@@ -17,7 +20,7 @@ Project Tree
 └── scripts
     └── setup-githooks.sh
 
-6 directories, 7 files
+8 directories, 8 files
 ```
 <!-- PROJECT TREE END -->
 
