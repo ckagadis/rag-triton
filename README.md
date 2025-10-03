@@ -8,19 +8,16 @@ Project Tree
 ├── .githooks
 │   └── pre-commit
 ├── models
-│   ├── clip
-│   │   └── 1
-│   │       └── config.pbtxt
-│   └── resnet50
+│   └── clip
 │       ├── 1
-│       │   ├── model.onnx
-│       │   └── model.onnxclear
+│       │   ├── config.pbtxt
+│       │   └── model.onnx
 │       └── config.pbtxt
 ├── README.md
 └── scripts
     └── setup-githooks.sh
 
-8 directories, 8 files
+6 directories, 7 files
 ```
 <!-- PROJECT TREE END -->
 
