@@ -14,9 +14,11 @@ Project Tree
 │       └── config.pbtxt
 ├── README.md
 └── scripts
-    └── setup-githooks.sh
+    ├── preprocess_ocr.py
+    ├── setup-githooks.sh
+    └── triton_client.py
 
-6 directories, 6 files
+6 directories, 8 files
 ```
 <!-- PROJECT TREE END -->
 

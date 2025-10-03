@@ -1,23 +1,34 @@
 version: "3.9"
-
 services:
   triton:
-    image: nvcr.io/nvidia/tritonserver:23.12-py3
+    image: nvcr.io/nvidia/tritonserver:24.08-py3  # Updated to latest stable
     container_name: triton_server
     runtime: nvidia
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
       - NVIDIA_DRIVER_CAPABILITIES=compute,utility
     volumes:
-      # Mount your model repository (replace with your path)
       - ./models:/models
+      - ./logs:/logs  # Added for debugging
     command: >
       tritonserver
       --model-repository=/models
       --http-port=8000
       --grpc-port=8001
       --metrics-port=8002
+      --log-verbose=1  # Verbose logging
+      --strict-model-config=false  # Flexible model config
     ports:
-      - "8000:8000"   # HTTP endpoint
-      - "8001:8001"   # gRPC endpoint
-      - "8002:8002"   # Prometheus metrics
+      - "8000:8000"
+      - "8001:8001"
+      - "8002:8002"
+    shm_size: '2gb'  # For large models
+    ulimits:
+      memlock: -1
+      stack: 67108864
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [gpu]
