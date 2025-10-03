@@ -10,14 +10,13 @@ Project Tree
 ├── models
 │   └── clip
 │       ├── 1
-│       │   ├── config.pbtxt
 │       │   └── model.onnx
 │       └── config.pbtxt
 ├── README.md
 └── scripts
     └── setup-githooks.sh
 
-6 directories, 7 files
+6 directories, 6 files
 ```
 <!-- PROJECT TREE END -->
 
